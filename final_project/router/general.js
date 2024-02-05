@@ -10,13 +10,15 @@ public_users.post("/register", (req,res) => {
   return res.status(300).json({message: "Yet to be implemented"});
 });
 
-function getBooks() {
-    return JSON.stringify(books, null, 2); // 2 is the number of spaces for indentation
+async function getBooks() {
+    return await JSON.stringify(books, null, 2); // 2 is the number of spaces for indentation
   }
 
-  function getBookDetails(isbn) {
-    const book = Object.values(books).find((book) => book.isbn === isbn);
-    return book ? JSON.stringify(book, null, 2) : "Book not found";
+  async function getBookDetails(isbn) {
+    const book = await Object.values(books).find((book) => book.isbn === isbn);
+    const promise = new Promise ((res,rej) => {
+        return book ? JSON.stringify(book, null, 2) : "Book not found";
+    })
   }
   function getBooksByAuthor(author) {
     const matchingBooks = Object.keys(books)
@@ -27,13 +29,15 @@ function getBooks() {
       : "Books by author not found";
   }
 
-  function getBooksByTitle(title) {
+ async function getBooksByTitle(title) {
     const matchingBooks = Object.keys(books)
       .filter((key) => books[key].title === title)
       .map((key) => books[key]);
-    return matchingBooks.length
+    const promise = new Promise((res, rej) => {
+        return await matchingBooks.length
       ? JSON.stringify(matchingBooks, null, 2)
       : "Books by title not found";
+    })
   }
 // Get the book list available in the shop
 public_users.get('/',async function (req, res) {
